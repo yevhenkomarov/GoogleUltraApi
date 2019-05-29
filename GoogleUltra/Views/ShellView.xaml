@@ -1,0 +1,30 @@
+<Window x:Class="GoogleUltra.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d" Background="Black"
+        Title="ShellView" Height="450" Width="800">
+    <Grid>
+        <Button x:Name="GetCurrentTrack" Content="Get current track" HorizontalAlignment="Left" Margin="55,46,0,0"
+                VerticalAlignment="Top" Width="213" Height="20" />
+        <TextBlock x:Name="CurrentTrack" HorizontalAlignment="Left" Margin="309,49,0,0" TextWrapping="Wrap"
+                   Text="Current track info" VerticalAlignment="Top" Width="330" Background="#FFD4CECE"
+                   Grid.ColumnSpan="2" Height="16" />
+
+        <Image x:Name="CoverImage" HorizontalAlignment="Left" Margin="660,35,0,0" VerticalAlignment="Top" Width="330"
+               Grid.ColumnSpan="2" Height="100" />
+
+        <Button x:Name="SearchOnGooglePlayBtn" Content="Search on google music" HorizontalAlignment="Left"
+                Margin="55,94,0,0" VerticalAlignment="Top" Width="213" Height="20" IsEnabled="False" />
+        <Button x:Name="AddToPlayListBtn" Content="Add to playlist" HorizontalAlignment="Right" Margin="0,300,36.6,0"
+                VerticalAlignment="Top" Width="99" Height="56" IsEnabled="False" />
+        <Button x:Name="PlayTrackBtn" Content="Play track" HorizontalAlignment="Right" Margin="0,350,36.6,0"
+                VerticalAlignment="Top" Width="99" Height="56" IsEnabled="True" />
+        <ListBox x:Name="SearchResultListBox" HorizontalAlignment="Left" Height="257" Margin="24,139,0,0"
+                 VerticalAlignment="Top" Width="590" Grid.ColumnSpan="2" />
+        <ComboBox x:Name="AvailablePlayListsBox" HorizontalAlignment="Left" Margin="658,185,0,0"
+                  VerticalAlignment="Top" Width="99" Height="26" />
+
+    </Grid>
+</Window>
