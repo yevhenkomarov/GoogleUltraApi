@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace GoogleUltra
 {
@@ -8,13 +9,18 @@ namespace GoogleUltra
         public event Action GetCurrentTrackBtnClicked;
         public event Action SearchOnGooglePlayBtnClicked;
         public event Action AddToPlayListBtnClicked;
-        public event Action PlaylistSelectorClicked;
+        public event Action PlayTrackBtnClicked;
 
         public MainWindow()
         {
             InitializeComponent();
         }
-        
+
+        public void SetCoverImage(BitmapImage image)
+        {
+            CoverImage.Source = image;
+        }
+
         private void GetCurrentTrackBtn_Click(object sender, RoutedEventArgs e)
         {
             GetCurrentTrackBtnClicked?.Invoke();
@@ -30,9 +36,9 @@ namespace GoogleUltra
             AddToPlayListBtnClicked?.Invoke();
         }
 
-        private void AvailablePlaylistsBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void PlayTrackBtn_Click(object sender, RoutedEventArgs e)
         {
-            PlaylistSelectorClicked?.Invoke();
+            PlayTrackBtnClicked?.Invoke();
         }
     }
 }
