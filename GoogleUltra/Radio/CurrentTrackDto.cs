@@ -1,4 +1,4 @@
-namespace GoogleUltra
+namespace GoogleUltra.Radio
 {
     public class CurrentTrackDto
     {

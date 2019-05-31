@@ -75,8 +75,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs" />
-    <Compile Include="CurrentTrackDto.cs" />
+    <Compile Include="GoogleMusic\GoogleMusicClient.cs" />
+    <Compile Include="GoogleMusic\IGoogleMusicClient.cs" />
+    <Compile Include="GoogleMusic\Login\IGoogleMusicLoginData.cs" />
+    <Compile Include="GoogleMusic\Login\LoginData.cs" />
     <Compile Include="GoogleUltraBootstrapper.cs" />
+    <Compile Include="Models\CurrentTrackModel.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Radio\CurrentTrackDto.cs" />
     <Compile Include="Radio\IRadioSettings.cs" />
     <Compile Include="Radio\ITrackExtractor.cs" />
     <Compile Include="Radio\RadioTrackInfoExtractor.cs" />
@@ -85,7 +91,6 @@
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LoginData.cs" />
     <Page Include="Views\ShellView.xaml" />
   </ItemGroup>
   <ItemGroup>
