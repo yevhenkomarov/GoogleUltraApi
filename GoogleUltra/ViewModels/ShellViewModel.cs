@@ -1,14 +1,11 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows.Controls;
+using Caliburn.Micro;
 using GoogleMusicApi.Structure;
 using GoogleUltra.GoogleMusic;
 using GoogleUltra.GoogleMusic.Login;
 using GoogleUltra.Models;
 using GoogleUltra.Radio;
-using ListBox = System.Windows.Forms.ListBox;
-using Screen = Caliburn.Micro.Screen;
 
 namespace GoogleUltra.ViewModels
 {
@@ -17,22 +14,22 @@ namespace GoogleUltra.ViewModels
         private readonly IGoogleMusicClient _googleMusicClient;
         private readonly ITrackExtractor _trackExtractor;
         private readonly CurrentTrackModel _currentTrackModel;
+        private ObservableCollection<Track> _tracksFound;
+        private ObservableCollection<Playlist> _playlists;
         private string _currentTrackTitle;
-        private bool _isSomethingFound;
-
+        
         public ShellViewModel()
         {
             _trackExtractor = new RadioTrackInfoExtractor(new UltraFmRadioSettings());
             _googleMusicClient = new GoogleMusicClient {LoginData = new LoginData()};
             _googleMusicClient.InitializeGoogleMusicClient();
             _currentTrackModel = new CurrentTrackModel();
+            _googleMusicClient.PlaylistsUpdated += OnPlaylistsUpdated;
         }
-        
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged(string propertyName)
+
+        private void OnPlaylistsUpdated()
         {
-            if(PropertyChanged!=null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            AvailablePlayLists = _googleMusicClient.Playlists;
         }
 
         public string CurrentTrackTitle
@@ -44,13 +41,45 @@ namespace GoogleUltra.ViewModels
                 NotifyOfPropertyChange(() => CurrentTrackTitle);
             }
         }
-
-        private ObservableCollection<Track> _tracksFound;
-
+        
         public ObservableCollection<Track> TracksFound
         {
             get { return _tracksFound; }
-            set { _tracksFound = value; }
+            set
+            {
+                _tracksFound = value;
+                NotifyOfPropertyChange(() => TracksFound);
+            }
+        }
+
+        public ObservableCollection<Playlist> AvailablePlayLists
+        {
+            get { return _playlists; }
+            set
+            {
+                _playlists = value;
+                NotifyOfPropertyChange(() => AvailablePlayLists);
+            }
+        }
+
+        public Track HighlightedTrack
+        {
+            get { return _currentTrackModel.HighlightedTrack; }
+            set
+            {
+                _currentTrackModel.HighlightedTrack = value;
+                NotifyOfPropertyChange(() => HighlightedTrack);
+            }
+        }
+
+        public Playlist HighlightedPlaylist
+        {
+            get { return _currentTrackModel.HighlightedPlaylist; }
+            set
+            {
+                _currentTrackModel.HighlightedPlaylist = value;
+                NotifyOfPropertyChange(() => HighlightedPlaylist);
+            }
         }
 
         public void GetCurrentTrack()
@@ -63,33 +92,14 @@ namespace GoogleUltra.ViewModels
         {
             if (_googleMusicClient.IsLoggedIn)
             {
-                _isSomethingFound = await _googleMusicClient.TryFind(_currentTrackModel.TrackData.metadata);
+                TracksFound = await _googleMusicClient.TryFind(_currentTrackModel.TrackData.metadata);
             }
-
-            UpdateSearchResults();
         }
 
-        private void UpdateSearchResults()
+        public void AddToPlayList()
         {
-            if (!_isSomethingFound) return;
-            var listBox = new ListBox();
-            foreach (Track track in _googleMusicClient.SearchResult)
-            {
-                listBox.Items.Add(new ListBoxItem {Content = track});
-            }
-            SearchResultListBox = listBox;
-        }
-        
-        private ListBox _searchResultListBox;
-
-        public ListBox SearchResultListBox
-        {
-            get { return _searchResultListBox; }
-            set
-            {
-                _searchResultListBox = value;
-                NotifyOfPropertyChange(() => SearchResultListBox);
-            }
+            _googleMusicClient.AddTrackToPlaylist(_currentTrackModel.HighlightedPlaylist,
+                _currentTrackModel.HighlightedTrack);
         }
     }
 }

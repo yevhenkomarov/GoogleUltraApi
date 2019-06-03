@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using GoogleMusicApi.Common;
 using GoogleMusicApi.Structure;
@@ -9,23 +10,20 @@ namespace GoogleUltra.GoogleMusic
 {
     public class GoogleMusicClient : IGoogleMusicClient
     {
+        public event Action PlaylistsUpdated = delegate {  };
         private readonly MobileClient _mobileClient;
-        private readonly List<Track> _trackSearchResult;
 
         public GoogleMusicClient()
         {
             _mobileClient = new MobileClient();
-            _trackSearchResult = new List<Track>();
         }
-
+        
         public bool IsLoggedIn { get; private set; }
 
         public IGoogleMusicLoginData LoginData { get; set; }
 
-        public List<Playlist> Playlists { get; private set; }
-
-        public List<Track> SearchResult => _trackSearchResult;
-
+        public ObservableCollection<Playlist> Playlists { get; private set; }
+        
         public async Task InitializeGoogleMusicClient()
         {
             if (string.IsNullOrWhiteSpace(LoginData.Login))
@@ -37,21 +35,22 @@ namespace GoogleUltra.GoogleMusic
             if (IsLoggedIn)
             {
                 Playlists = await InitPlayLists();
+                PlaylistsUpdated.Invoke();
             }
         }
 
-        public async Task<bool> TryFind(string trackSearchData)
+        public async Task<ObservableCollection<Track>> TryFind(string trackSearchData)
         {
-            _trackSearchResult.Clear();
-            var searchResult = await _mobileClient.SearchAsync(trackSearchData);
+            var trackSearchResult = new ObservableCollection<Track>();
+            SearchResponse searchResult = await _mobileClient.SearchAsync(trackSearchData);
 
-            foreach (var resultEntry in searchResult.Entries)
+            foreach (SearchResult resultEntry in searchResult.Entries)
             {
                 if (resultEntry.Track == null) continue;
-                _trackSearchResult.Add(resultEntry.Track);
+                trackSearchResult.Add(resultEntry.Track);
             }
 
-            return _trackSearchResult.Count > 0;
+            return trackSearchResult;
         }
 
         public async Task<bool> AddTrackToPlaylist(Playlist playlist, Track track)
@@ -60,10 +59,22 @@ namespace GoogleUltra.GoogleMusic
             return response.ResponseMutation[0].ResponseCode == ResponseCode.Ok;
         }
         
-        private async Task<List<Playlist>> InitPlayLists()
+        private async Task<ObservableCollection<Playlist>> InitPlayLists()
         {
             var playListsResult = await _mobileClient.ListPlaylistsAsync();
-            return playListsResult.Data.Items;
+            var playlistsCollection = new ObservableCollection<Playlist>();
+            foreach (var playlist in playListsResult.Data.Items)
+            {
+                playlistsCollection.Add(playlist);
+            }
+
+            return playlistsCollection;
+        }
+
+        public async Task<string> GetStreamAddress(Track selectedTrack)
+        {
+            var url = await _mobileClient.GetStreamUrlAsync(selectedTrack);
+            return url.ToString();
         }
     }
 }

@@ -17,14 +17,37 @@
 
         <Button x:Name="SearchOnGooglePlayBtn" Content="Search on google music" HorizontalAlignment="Left"
                 Margin="55,94,0,0" VerticalAlignment="Top" Width="213" Height="20" IsEnabled="True" />
-        <Button x:Name="AddToPlayListBtn" Content="Add to playlist" HorizontalAlignment="Right" Margin="0,300,36.6,0"
-                VerticalAlignment="Top" Width="99" Height="56" IsEnabled="False" />
-        <Button x:Name="PlayTrackBtn" Content="Play track" HorizontalAlignment="Right" Margin="0,350,36.6,0"
+        <Button x:Name="AddToPlayList" Content="Add to playlist" HorizontalAlignment="Right" Margin="0,300,36.6,0"
+                VerticalAlignment="Top" Width="99" Height="56" />
+        <Button x:Name="PlayTrack" Content="Play track" HorizontalAlignment="Right" Margin="0,350,36.6,0"
                 VerticalAlignment="Top" Width="99" Height="56" IsEnabled="True" />
-        <ListBox x:Name="SearchResultListBox" ItemsSource="{Binding Path=TracksFound}" HorizontalAlignment="Left" Height="257" Margin="24,139,0,0"
-                 VerticalAlignment="Top" Width="590" Grid.ColumnSpan="2"  />
-        <ComboBox x:Name="AvailablePlayListsBox" HorizontalAlignment="Left" Margin="658,185,0,0"
-                  VerticalAlignment="Top" Width="99" Height="26" />
+        
+        <ListBox ItemsSource="{Binding TracksFound}" 
+                 SelectedItem="{Binding Highlightedtrack}"
+                 HorizontalAlignment="Left" Height="257" Margin="24,139,0,0" VerticalAlignment="Top" Width="590" Grid.ColumnSpan="2">
+                <ListBox.ItemTemplate>
+                        <DataTemplate>
+                                <TextBlock>
+                                  <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} - {1}">
+                                                        <Binding Path="Artist"/>
+                                                        <Binding Path="Title"/>
+                                                </MultiBinding>
+                                  </TextBlock.Text>      
+                                </TextBlock>
+                        </DataTemplate>
+                </ListBox.ItemTemplate>
+        </ListBox>
+       
+        <ComboBox ItemsSource="{Binding AvailablePlayLists}"
+                  SelectedItem="{Binding HighlightedPlaylist}"
+                  HorizontalAlignment="Left" Margin="658,185,0,0" VerticalAlignment="Top" Width="99" Height="26">
+                <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                </ComboBox.ItemTemplate> 
+                </ComboBox>
 
     </Grid>
 </Window>

@@ -81,6 +81,7 @@
     <Compile Include="GoogleMusic\Login\LoginData.cs" />
     <Compile Include="GoogleUltraBootstrapper.cs" />
     <Compile Include="Models\CurrentTrackModel.cs" />
+    <Compile Include="MusicPlayer\IMusicPlayer.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Radio\CurrentTrackDto.cs" />
     <Compile Include="Radio\IRadioSettings.cs" />
