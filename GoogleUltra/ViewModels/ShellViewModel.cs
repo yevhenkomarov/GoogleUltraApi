@@ -1,10 +1,12 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using GoogleMusicApi.Structure;
 using GoogleUltra.GoogleMusic;
 using GoogleUltra.GoogleMusic.Login;
 using GoogleUltra.Models;
+using GoogleUltra.MusicPlayer;
 using GoogleUltra.Radio;
 
 namespace GoogleUltra.ViewModels
@@ -13,10 +15,10 @@ namespace GoogleUltra.ViewModels
     {
         private readonly IGoogleMusicClient _googleMusicClient;
         private readonly ITrackExtractor _trackExtractor;
+        private readonly IMusicPlayer _musicPlayer; 
         private readonly CurrentTrackModel _currentTrackModel;
         private ObservableCollection<Track> _tracksFound;
         private ObservableCollection<Playlist> _playlists;
-        private string _currentTrackTitle;
         
         public ShellViewModel()
         {
@@ -25,6 +27,7 @@ namespace GoogleUltra.ViewModels
             _googleMusicClient.InitializeGoogleMusicClient();
             _currentTrackModel = new CurrentTrackModel();
             _googleMusicClient.PlaylistsUpdated += OnPlaylistsUpdated;
+            _musicPlayer = new BasicMusicPlayer();
         }
 
         private void OnPlaylistsUpdated()
@@ -34,10 +37,10 @@ namespace GoogleUltra.ViewModels
 
         public string CurrentTrackTitle
         {
-            get { return _currentTrackTitle; }
+            get { return ShowCurrentTrackName(); }
             set
             {
-                _currentTrackTitle = value;
+                _currentTrackModel.TrackData.metadata = value;
                 NotifyOfPropertyChange(() => CurrentTrackTitle);
             }
         }
@@ -82,10 +85,12 @@ namespace GoogleUltra.ViewModels
             }
         }
 
-        public void GetCurrentTrack()
+        public void GetCurrentTrackData()
         {
             _currentTrackModel.TrackData = _trackExtractor.ExtractInfo();
             CurrentTrackTitle = _currentTrackModel.TrackData.metadata;
+            _currentTrackModel.CoverImage = 
+                _trackExtractor.GetCoverImage(_currentTrackModel.TrackData.cover);
         }
 
         public async Task SearchOnGooglePlayBtn()
@@ -100,6 +105,29 @@ namespace GoogleUltra.ViewModels
         {
             _googleMusicClient.AddTrackToPlaylist(_currentTrackModel.HighlightedPlaylist,
                 _currentTrackModel.HighlightedTrack);
+        }
+
+        public async Task PlayGoogleMusicTrack()
+        {
+            var uri = await _googleMusicClient.GetStreamAddress(HighlightedTrack);
+            _musicPlayer.StartPlaying(uri, MusicSource.GoogleMusic);
+        }
+
+        public void StopGoogleMusicTrack()
+        {
+            _musicPlayer.StopPlaying();
+        }
+
+        public void PlayRadio()
+        {
+            _musicPlayer.StartPlaying(_trackExtractor.GetStreamAddress(),
+                MusicSource.Radio);
+        }
+
+        private string ShowCurrentTrackName()
+        {
+            return _currentTrackModel.TrackData == null ? "Current track name" :
+                _currentTrackModel.TrackData.metadata;
         }
     }
 }

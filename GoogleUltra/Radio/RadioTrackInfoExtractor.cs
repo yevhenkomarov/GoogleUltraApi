@@ -1,6 +1,8 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
 
 namespace GoogleUltra.Radio
@@ -14,6 +16,11 @@ namespace GoogleUltra.Radio
             _radioSettings = radioSettings;
         }
 
+        public string GetStreamAddress()
+        {
+            return _radioSettings.StreamAddress.ToString();
+        }
+
         public CurrentTrackDto ExtractInfo()
         {
             CurrentTrackDto currentTrackInfo;
@@ -25,6 +32,11 @@ namespace GoogleUltra.Radio
             }
 
             return currentTrackInfo;
+        }
+
+        public BitmapImage GetCoverImage(string uri)
+        {
+            return new BitmapImage(new Uri($"https://fmgid.com/stations/ultra/{uri}"));
         }
     }
 }
