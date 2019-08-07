@@ -11,8 +11,10 @@ namespace GoogleUltra.GoogleMusic
         event Action PlaylistsUpdated;
         bool IsLoggedIn { get; }
         IGoogleMusicLoginData LoginData { get; set; }
+        void WriteLoginSessionDataToFile();
+        void ClearLoginSessionData();
         ObservableCollection<Playlist> Playlists { get; }
-        Task InitializeGoogleMusicClient();
+        Task<bool> InitializeGoogleMusicClient();
         Task<ObservableCollection<Track>> TryFind(string trackSearchData);
         Task<bool> AddTrackToPlaylist(Playlist playlist, Track track);
         Task<string> GetStreamAddress(Track selectedTrack);

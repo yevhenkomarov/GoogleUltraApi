@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using GoogleMusicApi.Structure;
 using GoogleUltra.GoogleMusic;
@@ -23,8 +23,7 @@ namespace GoogleUltra.ViewModels
         public ShellViewModel()
         {
             _trackExtractor = new RadioTrackInfoExtractor(new UltraFmRadioSettings());
-            _googleMusicClient = new GoogleMusicClient {LoginData = new LoginData()};
-            _googleMusicClient.InitializeGoogleMusicClient();
+            _googleMusicClient = new GoogleMusicClient();
             _currentTrackModel = new CurrentTrackModel();
             _googleMusicClient.PlaylistsUpdated += OnPlaylistsUpdated;
             _musicPlayer = new BasicMusicPlayer();
@@ -85,6 +84,35 @@ namespace GoogleUltra.ViewModels
             }
         }
 
+        public string LoginAddressValue
+        {
+            get => _googleMusicClient.LoginData.Login;
+            set
+            {
+                _googleMusicClient.LoginData.Login = value;
+                NotifyOfPropertyChange(() => LoginAddressValue);
+            }
+        }
+        public string PasswordValue
+        {
+            get => _googleMusicClient.LoginData.Password;
+            set
+            {
+                _googleMusicClient.LoginData.Password = value;
+                NotifyOfPropertyChange(() => PasswordValue);
+            }
+        }
+
+        public bool StayLoggedInChx
+        {
+            get => _googleMusicClient.LoginData.RememberMe;
+            set
+            {
+                _googleMusicClient.LoginData.RememberMe = value;
+                NotifyOfPropertyChange(() => StayLoggedInChx);
+            }
+        }
+
         public void GetCurrentTrackData()
         {
             _currentTrackModel.TrackData = _trackExtractor.ExtractInfo();
@@ -124,10 +152,30 @@ namespace GoogleUltra.ViewModels
                 MusicSource.Radio);
         }
 
+        public async void LogIn()
+        {
+            var loggedInSuccessful = await _googleMusicClient.InitializeGoogleMusicClient();
+            if (loggedInSuccessful && StayLoggedInChx)
+            {
+                _googleMusicClient.WriteLoginSessionDataToFile();
+            }
+
+        }
+
         private string ShowCurrentTrackName()
         {
             return _currentTrackModel.TrackData == null ? "Current track name" :
                 _currentTrackModel.TrackData.metadata;
+        }
+
+        protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+        {
+            if (!StayLoggedInChx)
+            {
+                _googleMusicClient.ClearLoginSessionData();
+            }
+
+            return base.OnDeactivateAsync(close, cancellationToken);
         }
     }
 }

@@ -6,53 +6,54 @@
         mc:Ignorable="d" Background="Black"
         Title="ShellView" Height="450" Width="800">
     <Grid>
-        <Button x:Name="GetCurrentTrackData" Content="Get current track" HorizontalAlignment="Left" Margin="55,46,0,0"
+        <Button x:Name="GetCurrentTrackData" Content="Get current track" HorizontalAlignment="Left" Margin="24,20,0,0"
                 VerticalAlignment="Top" Width="213" Height="20" />
-        <TextBlock x:Name="CurrentTrackTitle" HorizontalAlignment="Left" Margin="309,49,0,0" TextWrapping="Wrap"
-                   Text="Current track info" VerticalAlignment="Top" Width="330" Background="#FFD4CECE"
-                   Grid.ColumnSpan="2" Height="16" />
-        
-        <Button x:Name="PlayRadio" Content="PlayRadio" HorizontalAlignment="Left" Margin="660,35,0,0" VerticalAlignment="Top" Width="90"
-                Grid.ColumnSpan="2" Height="30" />
+        <TextBlock x:Name="CurrentTrackTitle" HorizontalAlignment="Left" Margin="284,20,0,0" TextWrapping="Wrap"
+                   Text="Current track info" VerticalAlignment="Top" Width="330" Background="#FFD4CECE" Height="20" />
+
+        <Button x:Name="PlayRadio" Content="PlayRadio" HorizontalAlignment="Left" Margin="660,15,0,0" VerticalAlignment="Top" Width="90" Height="30" />
 
         <Button x:Name="SearchOnGooglePlayBtn" Content="Search on google music" HorizontalAlignment="Left"
-                Margin="55,94,0,0" VerticalAlignment="Top" Width="213" Height="20" IsEnabled="True" />
+                Margin="24,70,0,0" VerticalAlignment="Top" Width="213" Height="20" IsEnabled="True" />
         <Button x:Name="AddToPlayList" Content="Add to playlist" HorizontalAlignment="Right" Margin="0,280,36.6,0"
                 VerticalAlignment="Top" Width="99" Height="56" />
         <Button x:Name="PlayGoogleMusicTrack" Content="Play" HorizontalAlignment="Right" Margin="0,330,36.6,0"
                 VerticalAlignment="Top" Width="99" Height="30" IsEnabled="True" />
         <Button x:Name="StopGoogleMusicTrack" Content="Stop" HorizontalAlignment="Right" Margin="0,355,36.6,0"
                 VerticalAlignment="Top" Width="99" Height="30" IsEnabled="True" />
-        
+
         <ListBox ItemsSource="{Binding TracksFound}" 
                  SelectedItem="{Binding HighlightedTrack}"
                  HorizontalAlignment="Left" Height="257" Margin="24,139,0,0" VerticalAlignment="Top" Width="590" Grid.ColumnSpan="2">
-                <ListBox.ItemTemplate>
-                        <DataTemplate>
-                                <TextBlock>
-                                  <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0} - {1}">
-                                                        <Binding Path="Artist"/>
-                                                        <Binding Path="Title"/>
-                                                </MultiBinding>
-                                  </TextBlock.Text>      
-                                </TextBlock>
-                        </DataTemplate>
-                </ListBox.ItemTemplate>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} - {1}">
+                                <Binding Path="Artist"/>
+                                <Binding Path="Title"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
-       
+
         <ComboBox ItemsSource="{Binding AvailablePlayLists}"
                   SelectedItem="{Binding HighlightedPlaylist}"
                   HorizontalAlignment="Left" Margin="658,185,0,0" VerticalAlignment="Top" Width="99" Height="26">
-                <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                                <TextBlock Text="{Binding Name}"/>
-                        </DataTemplate>
-                </ComboBox.ItemTemplate> 
-                </ComboBox>
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
 
 
-        <Image x:Name="CoverImage" HorizontalAlignment="Left" Margin="660,35,0,0" VerticalAlignment="Top" Width="330"
-               Grid.ColumnSpan="2" Height="100" />
+        <Image x:Name="CoverImage" HorizontalAlignment="Left" Margin="660,70,0,0" VerticalAlignment="Top" Width="97" Height="90" RenderTransformOrigin="0.514,0.507" />
+        <TextBox x:Name="LoginAddressValue" HorizontalAlignment="Left" Height="23" Margin="24,103,0,0" TextWrapping="Wrap" Text="Login" VerticalAlignment="Top" Width="213"/>
+        <TextBox x:Name="PasswordValue" HorizontalAlignment="Left" Height="23" Margin="251,103,0,0" TextWrapping="Wrap" Text="Password" VerticalAlignment="Top" Width="137"/>
+        <Button x:Name="LogIn" Content="Login" HorizontalAlignment="Left" Margin="401,103,0,0" VerticalAlignment="Top" Width="75" Height="24"/>
+        <CheckBox IsChecked="{Binding StayLoggedInChx}" x:Name="StayLoggedInChx" Content="Stay logged in" Foreground="Orange" HorizontalAlignment="Left" Margin="493,108,0,0" VerticalAlignment="Top" Width="121" Height="16" FontWeight="Bold"/>
     </Grid>
 </Window>

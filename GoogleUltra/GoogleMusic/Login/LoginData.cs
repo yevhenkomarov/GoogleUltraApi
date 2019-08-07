@@ -2,8 +2,12 @@
 {
     public class LoginData : IGoogleMusicLoginData
     {
-        public string Login { get; set; } = "yevhenkomarov@gmail.com";
+        public string Login { get; set; } // = "yevhenkomarov@gmail.com";
 
-        public string Password { get; set; } = "MkvPcb18";
+        public string MasterToken { get; set; }
+
+        public string Password { get; set; } //= "*******";
+
+        public bool RememberMe { get; set; }
     }
 }
